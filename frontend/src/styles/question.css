@@ -1,0 +1,136 @@
+/** @format */
+html {
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: inherit;
+  color: #fff;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(61, 34, 8, 0.89);
+  position: relative;
+}
+
+.container {
+  background-color: rgba(85, 44, 6, 0.89);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 400px;
+}
+
+h2 {
+  margin-top: 0;
+  color: #def;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+textarea,
+input[type="text"],
+input[type="number"],
+button {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: #444;
+}
+
+button {
+  background-color: #4caf50;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+p {
+  font-weight: bold;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 0.9em;
+  color: #fff;
+}
+
+p span {
+  color: #efd;
+}
+
+.textarea {
+  position: relative;
+}
+
+.textarea .increment {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 0.9em;
+  color: #444;
+}
+
+.increment span {
+  color: #444;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 50px;
+  max-height: 100px;
+  color: #444;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.popup_modal {
+  background-color: #16a309;
+  position: absolute;
+  top: -100px;
+  left: auto;
+  right: auto;
+  min-width: 150px;
+  max-width: 230px;
+  display: flex;
+  place-items: center;
+  justify-content: center;
+  gap: 2.5em;
+  border-radius: 30px;
+  transition: 0.4s ease-out;
+  padding: 10px;
+}
+
+.active_modal {
+  top: 30px;
+  transition: 0.4s ease-in;
+}
+
+.popup_modal p {
+  font-size: 1em;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: #fff;
+}
+
+.popup_modal span {
+  font-size: 1.1em;
+  cursor: pointer;
+}
+p.msg{
+    margin: 10px 0;
+    color: rgb(247, 21, 40);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}

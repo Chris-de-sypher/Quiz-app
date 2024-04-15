@@ -1,0 +1,27 @@
+<!-- @format -->
+<link rel="stylesheet" href="/user/v1/styles/signuppage.css" />
+
+<!-- signupForm -->
+<div class="signup">
+  <h1>Signup form</h1>
+  <p class="msg"></p>
+  <form action="/user/v1/signup" method="post" enctype="multipart/form-data">
+    <input type="email" name="email" id="email" placeholder="email" />
+    <br />
+    <br />
+    <input
+      type="password"
+      name="password"
+      id="password"
+      placeholder="password"
+    />
+    <br />
+    <br />
+    <input type="file" name="avatar" id="avatar" />
+    <br>
+    <button type="submit">submit</button>
+    <a href="/user/v1/login">login</a>
+  </form>
+</div>
+
+<script src="/user/v1/script/signup.js"></script>

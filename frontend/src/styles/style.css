@@ -1,0 +1,70 @@
+/** @format */
+
+html {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+body {
+  background: rgba(61, 34, 8, 0.89);
+}
+
+.image {
+  display: flex;
+  justify-content: center;
+  place-items: center;
+  flex-direction: column;
+  height: 90vh;
+}
+
+.image img {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+}
+
+.image h1 {
+  margin-top: 10px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: #efd;
+}
+
+header.logo {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  place-items: center;
+  height: 9vh;
+}
+
+header.logo h1 {
+  text-transform: capitalize;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: #fff;
+  font-size: 1.1em;
+}
+
+.btn button {
+  background: #fff;
+  padding: 8px 8px;
+  border: none;
+  border-radius: 6px;
+}
+
+.btn{
+    display: flex;
+    gap: 1em;
+}
+
+
+.btn button a{
+  color: #333;
+  text-decoration: none;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  text-transform: capitalize;
+}

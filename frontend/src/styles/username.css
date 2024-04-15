@@ -1,0 +1,66 @@
+/** @format */
+
+html {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+body {
+  background: rgba(61, 34, 8, 0.89);
+}
+
+div.username {
+  display: flex;
+  /* justify-content: center; */
+  /* place-items: center; */
+  flex-direction: column;
+  background-color: indianred;
+  margin: 100px auto;
+  width: 35%;
+  padding: 15px;
+}
+
+form {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+h1 {
+  text-align: center;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: #efd;
+  margin-bottom: 10px;
+}
+
+form input {
+  height: 6vh;
+  width: inherit;
+  padding-left: 10px;
+  outline: none;
+}
+
+button {
+  height: 6vh;
+  cursor: pointer;
+  background-color: coral;
+  border: none;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: #eff;
+  font-size: 1.1em;
+}
+
+form a{
+    margin-top: 10px;
+}
+
+p.msg{
+    margin: 10px 0;
+    color: rgb(247, 21, 40);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}

@@ -1,0 +1,140 @@
+<!-- @format -->
+<link rel="stylesheet" href="/user/v1/styles/dashboard.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/regular.min.css"
+  integrity="sha512-KYEnM30Gjf5tMbgsrQJsR0FSpufP9S4EiAYi168MvTjK6E83x3r6PTvLPlXYX350/doBXmTFUEnJr/nCsDovuw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/brands.min.js"
+  integrity="sha512-ojD9xRtdGdJLd9K/vMhV6GyO8G9wVrofDXmX4AjrKPctyKTLaVVwuAJhZanincPnSprZv1Nc3iDpxIi/6+Xv7A=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+
+<div class="container">
+  <div class="side_bar">
+    <div class="profile-pics">
+      <img src="/user/v1/uploads/<%= avatar %>" alt="User Avatar" />
+      <span class="fa-solid fa-pencil"></span>
+    </div>
+
+    <ul class="menu">
+      <li><a href="#" data-id="profile-section" class="data">Profile</a></li>
+      <li>
+        <a href="#" data-id="analytic-section" class="analytic">Analytic</a>
+      </li>
+      <li><a href="#" data-id="Quiz-section" class="data">Quiz</a></li>
+    </ul>
+    <div class="logout">
+      <form action="/user/v1/logout" method="post">
+        <button type="submit">logout</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="main_body">
+    <div class="resize">
+      <span
+        class="fa-solid fa-angle-right hidden increaseWidth"
+        data-resize="300"
+      ></span>
+      <span
+        class="fa-solid fa-angle-left descreaseWidth"
+        data-resize="0"
+      ></span>
+    </div>
+
+    <div class="analytics content" id="analytic-section">
+      <canvas id="myChart"></canvas>
+    </div>
+
+    <!-- display content -->
+    <div class="display-content"></div>
+
+    <div class="profile_status content" id="profile-section">
+      <h1>Profile</h1>
+      <div class="userProfile"></div>
+
+      <!-- change user password -->
+      <div class="change-password">
+        <h1>Change Password</h1>
+        <form id="change_password">
+          <p class="msg"></p>
+          <label for="old-password"
+            >Old Password
+            <input
+              type="password"
+              name="old_password"
+              id="old-password"
+              placeholder="Old Password"
+            />
+            <span class="fa-solid fa-eye"></span>
+          </label>
+          <label for="new-password"
+            >New Password
+            <input
+              type="password"
+              name="new_password"
+              id="new-password"
+              placeholder="New Password"
+            />
+            <span class="fa-solid fa-eye"></span>
+          </label>
+          <label for="confirm_password"
+            >confirm_password
+            <input
+              type="password"
+              name="confirm_password"
+              id="confirm_password"
+              placeholder="Confirm password"
+            />
+            <span class="fa-solid fa-eye"></span>
+          </label>
+          <button type="submit">Change password</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- quiz section -->
+    <div class="quiz-section content" id="Quiz-section">
+      <h1>
+        Quiz
+        <!--<span><%=  %></span>-->
+      </h1>
+      <div class="quiz-parent-box"></div>
+      <div class="update_delete_btn">
+        <button type="click" id="update">Update</button>
+        <button type="submit" id="delete">Delete</button>
+      </div>
+      <div class="btn">
+        <button><a href="/user/v1/username">Create Quiz</a></button>
+        <button><a href="/user/v1/username">Answer Quiz</a></button>
+      </div>
+    </div>
+
+    <!-- update the user dp -->
+    <div class="avatar_modal_update">
+      <span class="fa-solid fa-xmark"></span>
+
+      <div class="avatar_modal">
+        <img src="/user/v1/uploads/<%= avatar %>" alt="User Avatar" >
+        <input type="file" name="updateAvatar" id="updateAvatar">
+        <button type="click">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="/user/v1/script/dashboard.js"></script>

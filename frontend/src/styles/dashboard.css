@@ -1,0 +1,491 @@
+/** @format */
+
+html {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  list-style: none;
+}
+
+body {
+  background: rgba(61, 34, 8, 0.89);
+}
+
+/* .btn{
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    place-items: center;
+}
+
+.btn button {
+  background: #fff;
+  padding: 8px 8px;
+  border: none;
+  border-radius: 6px;
+}
+
+.btn{
+    display: flex;
+    gap: 1em;
+}
+
+
+.btn button a{
+  color: #333;
+  text-decoration: none;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  text-transform: capitalize;
+} */
+
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.side_bar {
+  background-color: rgba(97, 36, 8, 0.966);
+  position: relative;
+  transition: 0.4s ease-out;
+  overflow: hidden;
+  width: 300px;
+  height: 100%;
+}
+
+.main_body {
+  width: inherit;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.profile-pics img {
+  width: 150px;
+  height: 150px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+}
+
+.profile-pics {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  place-items: center;
+  margin-top: 30px;
+}
+
+.profile-pics span {
+  position: absolute;
+  bottom: 10px;
+  right: 30px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1.5em;
+}
+
+.menu {
+  line-height: 3em;
+  margin: 30px 10px;
+}
+
+.menu li {
+  list-style-type: none;
+  /* background-color: red; */
+  margin-top: 10px;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: #fff;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.logout {
+  background-color: rgb(82, 37, 7);
+  width: inherit;
+  height: 7vh;
+  place-items: center;
+  display: flex;
+  padding-left: 20px;
+  margin-top: 170px;
+}
+
+.logout button {
+  background-color: transparent;
+  border: none;
+  font-size: 1.1em;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  text-transform: capitalize;
+  cursor: pointer;
+  color: #fff;
+}
+
+.resize {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  display: flex;
+}
+.resize span {
+  font-size: 1.3em;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.4s ease-out;
+}
+
+.hidden {
+  display: none !important;
+  transition: 0.4s ease-in;
+}
+
+.profile_status {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  display: none;
+}
+
+.profile_status h1 {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-weight: bold;
+  font-size: 1.5em;
+  color: #eff;
+  letter-spacing: 1px;
+  margin: 20px 20px;
+}
+
+.profile_status form,
+.userProfile {
+  margin: 0 20px;
+  background-color: #fff;
+  border-radius: 6px;
+  display: flex;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.profile_status form label,
+.profile_status .userProfile div {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(87, 52, 7, 0.822);
+  place-items: center;
+  margin-top: 10px;
+  padding: 5px;
+  color: #fff;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  border-radius: 6px;
+  position: relative;
+}
+.profile_status form label input,
+.profile_status .userProfile div input {
+  width: 400px;
+  height: 7vh;
+  border: none;
+  outline: none;
+  padding-left: 10px;
+  color: #444;
+  border-radius: 6px;
+}
+
+.profile_status form button {
+  margin-top: 10px;
+  height: 5.5vh;
+  border: none;
+  outline: none;
+  text-transform: capitalize;
+  cursor: pointer;
+  background-color: rgb(9, 90, 9);
+  color: #fff;
+  border-radius: 6px;
+}
+
+.profile_status form label .fa-eye {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  color: #444;
+}
+
+canvas {
+  width: inherit !important; /* Set width */
+  height: inherit !important;
+  min-height: inherit; /* Set height */
+  max-height: inherit;
+  margin: 0 auto; /* Center horizontally */
+  display: block; /* Make it a block element */
+  border: 1px solid #ccc; /* Add border */
+}
+
+.analytics {
+  width: inherit;
+  height: calc(100vh - 5em);
+  padding: 10px;
+  margin-top: 30px;
+  padding: 0 50px;
+  /* display: none; */
+}
+
+.quiz-section {
+  padding: 30px;
+  display: none;
+  position: relative;
+}
+.quiz-box {
+  background-color: rgb(53, 4, 4);
+  padding: 20px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  margin-bottom: 30px;
+  position: relative;
+  height: 40vh;
+  overflow: hidden;
+  transition: 0.4s ease-out;
+}
+
+.quiz-parent-box {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.quiz-box form div {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(87, 52, 7, 0.822);
+  place-items: center;
+  margin-top: 10px;
+  padding: 10px;
+  color: #fff;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  border-radius: 6px;
+  position: relative;
+  /* height: 6vh; */
+  width: 100%;
+}
+
+.quiz-box form div span:last-child {
+  position: absolute;
+  right: 40px;
+  top: 20px;
+  color: #56f;
+  cursor: pointer;
+}
+.quiz-box form div span:nth-child(3) {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+  color: #7f7;
+  cursor: pointer;
+}
+
+.quiz-section form input {
+  height: 6vh;
+  border: 1px solid #eff;
+  outline: none;
+  margin-bottom: 5px;
+  padding-left: 10px;
+  margin-right: 60px;
+  width: 400px;
+  background-color: rgb(30, 31, 32);
+  color: #fff;
+  border-radius: 6px;
+}
+
+.quiz-section form label {
+  text-transform: capitalize;
+  margin-right: 10px;
+}
+
+.quiz-section form input::placeholder {
+  color: #fff;
+  text-transform: capitalize;
+}
+
+/* .quiz-section form input */
+
+.update_delete_btn {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 2em;
+  padding: 10px;
+  background-color: transparent !important;
+}
+
+.update_delete_btn button {
+  padding: 9px 14px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  /* background-color: rgb(7, 83, 7); */
+}
+.update_delete_btn button:first-child {
+  background-color: rgb(7, 83, 7) !important;
+}
+.update_delete_btn button:last-child {
+  background-color: rgb(117, 8, 8) !important;
+}
+
+.link {
+  display: flex;
+  /* width: 400px; */
+  gap: 1em;
+  /* flex-direction: column; */
+  margin-bottom: 5px;
+  padding: 10px !important;
+  border: 1px solid #fff;
+  color: #eff;
+}
+.link div {
+  all: revert;
+  width: 320px !important;
+  position: relative;
+  place-items: center !important;
+  display: flex;
+}
+.link div i {
+  /* all: revert; */
+  position: absolute;
+  right: 40px;
+  top: 15px;
+  color: #7f7;
+  font-size: 1.3em;
+  cursor: pointer;
+}
+.link input {
+  margin-left: 10px;
+}
+
+.active-icon {
+  display: block !important;
+}
+.inactive-icon {
+  display: none !important;
+}
+
+.quiz-section h1 {
+  margin-bottom: 20px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: #fff;
+}
+p.msg {
+  margin: 10px 0;
+  color: rgb(247, 21, 40);
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.quiz-section .quiz-box .fa-angle-right {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: rotateZ(90deg);
+  font-size: 1.3em;
+  color: #efff;
+  cursor: pointer;
+  transition: 0.4s ease-out;
+}
+
+.increaseHeight {
+  height: 851px;
+  transition: 0.4s ease-in;
+}
+.spin_icon {
+  transform: rotateZ(-90deg) !important;
+  transition: 0.4s ease-in;
+}
+
+.btn {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn button {
+  background: #fff;
+  padding: 8px 8px;
+  border: none;
+  border-radius: 6px;
+}
+
+.btn {
+  display: flex;
+  gap: 1em;
+}
+
+.btn button a {
+  color: #333;
+  text-decoration: none;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  text-transform: capitalize;
+}
+
+.check_to_delete {
+  display: none;
+}
+
+h2 {
+  color: #fff;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 2.1em;
+  text-align: center;
+  margin: 30px 0;
+}
+
+.avatar_modal_update {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.781);
+  display: none;
+  transition: .4s ease-out;
+}
+
+.avatar_modal_update .fa-xmark{
+  padding: 20px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1.4em;
+}
+
+.avatar_modal{
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  height: max-content;
+  width: 400px;
+  gap: 1em;
+  background-color: #fff;
+  margin: 70px auto;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.avatar_modal button{
+  width: 350px;
+  height: 6vh;
+  background-color: #56f;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.avatar_modal img{
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid #444;
+}
+

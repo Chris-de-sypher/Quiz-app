@@ -1,0 +1,81 @@
+<!-- @format -->
+
+<link rel="stylesheet" href="/user/v1/styles/quizpage.css" />
+
+<div class="border">
+  <h1>Create Quiz Questions</h1>
+  <p class="msg"></p>
+  <form>
+    <input type="text" name="title" id="title" placeholder="Quiz title" />
+    <br />
+    <br />
+    <!-- score board -->
+    <div class="score_board">
+      <input
+        type="number"
+        name="score_percentage"
+        id="score_percentage"
+        placeholder="total percentage"
+      />
+      <input
+        type="number"
+        name="passing_mark"
+        id="passing_mark"
+        placeholder="passing mark"
+      />
+    </div>
+    <br />
+    <br />
+    <!-- date -->
+    <div class="date">
+      <input type="date" name="start" id="start" />
+      <input type="date" name="end" id="end" />
+    </div>
+    <br /><br />
+    <!-- email and duration -->
+    <div class="email-duration">
+      <input
+        type="text"
+        name="duration"
+        id="duration"
+        placeholder="Duration in minutes"
+      />
+      <div class="email">
+        <label for="email">Enable email notification:</label>
+        <input type="radio" name="email" id="yes" value="true" /><span
+          >Yes</span
+        >
+        <input type="radio" name="email" id="no" value="false" /><span>No</span>
+        <input
+          type="number"
+          name="total_number_of_question"
+          id="total_number_of_question"
+          placeholder="Number of questions"
+        />
+      </div>
+    </div>
+    <br /><br />
+    <!-- description -->
+    <textarea
+      type="text"
+      name="description"
+      id="description"
+      cols="30"
+      rows="10"
+      placeholder="Description"
+    ></textarea>
+    <br />
+    <br />
+    <div class="btn">
+      <button type="button" class="cancel">Cancel</button>
+      <button type="submit" class="submit">Create Quiz</button>
+    </div>
+  </form>
+</div>
+
+<div class="image">
+  <img src="/user/v1/image/viindo.jpg" alt="viindo" />
+  <h1>QuizApp</h1>
+</div>
+
+<script src="/user/v1/script/quiz.js"></script>
