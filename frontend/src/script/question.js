@@ -50,7 +50,7 @@ form.addEventListener("submit", (e) => {
   let option4 = document.querySelector("#option4").value;
   let correctAnswer = document.querySelector("#correctAnswer").value;
 
-  console.log(heading, option1, option2, option3, option4, correctAnswer);
+  console.log(typeof correctAnswer);
 
   const data = {
     heading,

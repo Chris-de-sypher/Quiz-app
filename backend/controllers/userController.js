@@ -5,6 +5,8 @@ const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const quizCoollection = require("../model/quizModel");
 const questionCollection = require("../model/QuestionModel");
+const answerCollection = require("../model/answersModel");
+const mongoose = require("mongoose");
 
 const landingPage = (req, res) => {
   res.render("landingPage");
@@ -88,6 +90,39 @@ const questionPage = async (req, res) => {
 // confirmation page
 const confirm = (req, res) => {
   res.render("confirm");
+};
+
+const AnswerQuestion = async (req, res) => {
+  // Check if user is authenticated
+  if (!req.session.email) {
+    return res.status(401).redirect("/user/v1/login");
+  }
+
+  try {
+    // Find the user by email
+    const findUser = await userCollection.findOne({ email: req.session.email });
+
+    // If user or avatar is not found, redirect to login page
+    if (!findUser || !findUser.userAvatar || !findUser.username) {
+      return res.status(404).redirect("/user/v1/login");
+    }
+
+    const data = {
+      avatar: findUser.userAvatar,
+      username: findUser.username,
+    };
+
+    // Render dashboard with user avatar
+    return res.status(200).render("displayQuestion", data);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Internal server error");
+  }
+};
+
+// render the userdetail page
+const userdetailPage = (req, res) => {
+  res.render("userdetailsanswer");
 };
 
 // signup route
@@ -176,8 +211,6 @@ const logout = (req, res) => {
 const userName = async (req, res) => {
   const { username } = req.body;
 
-  console.log(req.session);
-
   if (!req.session.isAuthenticated) {
     return res.status(401).redirect("/user/v1/login");
   }
@@ -245,6 +278,14 @@ const quiz = async (req, res) => {
       expired_date: new Date(expired_date),
     });
 
+    // Ensure the dates are valid
+    if (
+      isNaN(newQuiz.start_date.getTime()) ||
+      isNaN(newQuiz.expired_date.getTime())
+    ) {
+      return res.status(400).send({ ErrMsg: "Invalid dates provided" });
+    }
+
     const savedQuiz = await newQuiz.save();
     req.session.quiz_id = savedQuiz._id.toString();
 
@@ -254,8 +295,7 @@ const quiz = async (req, res) => {
     );
 
     // create a unique link
-    const baseUrl = `http://localhost/user/v1/get_quiz/:${savedQuiz._id}`;
-    console.log(baseUrl);
+    const baseUrl = `${savedQuiz._id}`;
 
     // encode the url
     const encodeUrL = encodeURIComponent(baseUrl);
@@ -278,15 +318,15 @@ const question = async (req, res) => {
   // quiz id from the session
   const { quiz_id } = req.session;
 
-  // check for the value of the correct answer ensuring it's not above 4 or below 1
-  if (correctAnswer < 1 || correctAnswer > 4) {
-    return res.status(400).send({ ErrMsg: "Invalid correct answer" });
-  }
   // input our options into the array
   const options = [option1, option2, option3, option4];
 
-  // making the user input of correctanswer match with the array zero base logic
-  const correctAnswerIndex = Number(correctAnswer) - 1;
+  // loop through the array of options;
+  // Check if the correctAnswer is within the options
+  const correctAnswerIndex = options.indexOf(correctAnswer);
+  if (correctAnswerIndex === -1) {
+    return res.status(400).send({ ErrMsg: "Invalid correct answer" });
+  }
 
   try {
     const newData = new questionCollection({
@@ -314,11 +354,9 @@ const question = async (req, res) => {
 
     // convert the totalNumber to a number
     let number_of_question = parseInt(totalNumber);
-    console.log(number_of_question);
 
     // get the length of question from the quizmodel of questions
     const quiz_of_questions = quizData.questions.length;
-    console.log(quiz_of_questions);
 
     if (Number(quiz_of_questions) >= number_of_question) {
       return res.send({ limit: true });
@@ -392,37 +430,28 @@ const getUserProfile = async (req, res) => {
 const getQuiz = async (req, res) => {
   const { email } = req.session;
 
-  const findUser = await userCollection.findOne({ email });
-
-  if (!findUser) {
-    return res.status(404).redirect("/user/v1/login");
-  }
-
-  // get the quizzes
-  let getUserQuiz;
-
-  // Get the user's quiz IDs
-  getUserQuiz = findUser.quiz_Id;
-  if (!getUserQuiz || getUserQuiz.length === 0) {
-    console.log(getUserQuiz.length);
-    return res.status(404).json({ message: "No quizzes found for this user." });
-  }
-
-  console.log(...getUserQuiz);
-
-  // Fetch the quizzes from the quiz collection using the IDs
   try {
-    const quizzes = await quizCoollection.find({
-      _id: { $in: getUserQuiz },
-    });
-
-    if (!quizzes) {
-      return res.status(404).json({ message: "Quizzes not found." });
+    // Find the user
+    const findUser = await userCollection.findOne({ email });
+    if (!findUser) {
+      return res.status(404).redirect("/user/v1/login");
     }
 
-    console.log(quizzes);
+    // Get the user's quiz IDs
+    const userQuizzes = findUser.quiz_Id;
+    if (!userQuizzes || userQuizzes.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No quizzes found for this user." });
+    }
 
-    // Assuming you want to send the quizzes back in the response
+    // Fetch the quizzes from the quiz collection using the IDs
+    const quizzes = await quizCoollection.find({ _id: { $in: userQuizzes } });
+    if (!quizzes || quizzes.length === 0) {
+      return res.status(404).json({ message: "No quizzes found." });
+    }
+
+    // Send the quizzes in the response
     return res.status(200).json(quizzes);
   } catch (error) {
     console.error("Failed to fetch quizzes:", error);
@@ -443,8 +472,6 @@ const updateQuiz = async (req, res) => {
     total_score_percentage,
     total_number_of_question,
   } = req.body;
-
-  console.log(title);
 
   try {
     // update the title
@@ -540,12 +567,34 @@ const updateQuiz = async (req, res) => {
 // delete the quiz
 const deleteQuiz = async (req, res) => {
   const { quizID } = req.body;
+  const { email } = req.session;
 
   try {
     if (!quizID) {
       return res.status(404).send({ error: "Not found" });
     }
-    await quizCoollection.findByIdAndDelete({ _id: quizID });
+    let deletedQuizQuestions = await quizCoollection.findByIdAndDelete({
+      _id: quizID,
+    });
+
+    // get the question id from the deleted quiz
+    let getQuestionsID = deletedQuizQuestions.questions;
+    // now call the question document and parse the id to delete
+    await questionCollection.findByIdAndDelete({
+      _id: getQuestionsID,
+    });
+
+    // get the user who created the quiz and delete the quiz from the user array of quizes
+    const userQuiz = await userCollection.findOne({ email });
+
+    if (!userQuiz) {
+      return res.status(404).send({ error: "Quiz id not found" });
+    }
+
+    let deletedQuiz = userQuiz.quiz_Id.filter((q) => q.toString() !== quizID);
+    userQuiz.quiz_Id = deletedQuiz;
+
+    await userQuiz.save();
 
     return res.status(200).send({ success: "Deleted successfully" });
   } catch (err) {
@@ -581,6 +630,198 @@ const updateUserAvatar = async (req, res) => {
   }
 };
 
+// get the questions from the quiz
+const getQuestions = async (req, res) => {
+  const quizID = req.params.QuizID;
+
+  try {
+    // find the quiz
+    const findQuiz = await quizCoollection.findById({ _id: quizID });
+
+    if (!findQuiz) {
+      return res.status(404).send({ msg: "return the 404 page" });
+    }
+
+    // get the questions
+    let questionsID = findQuiz.questions;
+
+    const findQuestions = await questionCollection.find({
+      _id: { $in: questionsID },
+    });
+
+    if (!findQuestions) {
+      return res.status(404).json({ message: "Questions not found." });
+    }
+
+    // now get the headers
+    const headers = {
+      quiz_id: findQuiz._id,
+      quiz_name: findQuiz.title,
+      passing_grade: findQuiz.total_score_percentage,
+      number_of_question: findQuiz.total_number_of_question,
+      score_mark_per_question: findQuiz.score_mark_per_question,
+      duration: findQuiz.duration,
+    };
+
+    return res
+      .status(200)
+      .send({ headTitles: headers, questions: findQuestions });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({ error: "Internal server error" });
+  }
+};
+
+// userdetails
+// const userdetails = async (req, res) => {
+//   const { username, email } = req.body;
+
+//   if (!username || !email) {
+//     return res.status(400).send({err: "Not valid"})
+//   }
+
+//   try {
+
+//   }
+//   catch (errs) {
+//     console.log(errs);
+//     return res.status(400).send({Err: "Internal server error"})
+//   }
+// };
+
+// store the answers in the database
+const questionAnswered = async (req, res) => {
+  const { email } = req.session;
+  const { quizID, questionID, correctanswer, participantEMail } = req.body;
+
+  let score;
+  let userPercentage;
+
+  if (!email) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+
+  if (!quizID || !questionID || !correctanswer || !participantEMail) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    const checkingUserID = await userCollection.findOne({
+      email: participantEMail,
+    });
+    if (!checkingUserID) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const checkingQuizID = await quizCoollection.findById(quizID);
+    if (!checkingQuizID) {
+      return res.status(404).json({ error: "Quiz not found" });
+    }
+
+    const checkingQuestionID = await questionCollection.findById(questionID);
+    if (!checkingQuestionID) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+
+    // Check if the user has already answered the question
+    const existingAnswer = await answerCollection.findOne({
+      UserId: checkingUserID._id,
+      QuizId: quizID,
+      QuestionId: questionID,
+    });
+
+    if (existingAnswer) {
+      return res.status(400).json({ error: "Question answered already" });
+    }
+
+    let correctIndex = checkingQuestionID.options.indexOf(correctanswer);
+    let checkingCorrectanswer = checkingQuestionID.correct_answer;
+    let isCorrect = String(correctIndex) === String(checkingCorrectanswer);
+
+    // setting the user score for each question
+    if (isCorrect) {
+      score = Number(checkingQuizID.score_mark_per_question);
+    }
+
+    if (!isCorrect) {
+      score = 0;
+    }
+
+    const answerData = {
+      QuizId: quizID,
+      QuestionId: questionID,
+      UserId: checkingUserID._id,
+      answer: String(correctIndex),
+      isCorrect,
+      score,
+    };
+
+    const savedanswer = new answerCollection(answerData);
+
+    // we wanna check for the length of the answers in the answer collection to determine if the it matches with the length of the questions in the quiz collection then we return the total score for the user;
+
+    // question collection count
+    const questionIds = checkingQuizID.questions;
+    const questions = await questionCollection.find({
+      _id: { $in: questionIds },
+    });
+
+    // Get the length of the questions array
+    const questionCount = questions.length;
+
+    console.log(questionCount);
+
+    const quizIDS = checkingUserID.quiz_Id;
+    const answerCheck = await answerCollection.find({
+      QuizId: { $in: quizIDS },
+    });
+
+    let answerCount = Number(answerCheck.length);
+
+    // add one to every increment
+    answerCount++;
+
+    let compareLength = Number(answerCount) === Number(questionCount);
+
+    // once the data is saved then we use it to determine the total score for the user
+    const saved = await savedanswer.save();
+    if (saved) {
+      if (compareLength) {
+        // get the total score for the quiz
+        let total_score = checkingQuizID.total_score_percentage;
+
+        // calculate the user possbile score by multiplying the user score per question by the total number of questions;
+        // let userScore_perQuestion = checkingQuizID.score_mark_per_question;
+
+        let userPossible_score = Number(total_score);
+
+        // now get the total score the user got right and add them together;
+        // Retrieve all the answers for the given quizID
+        const userScore = await answerCollection.find({ QuizId: quizID });
+
+        console.log(userScore);
+
+        let questionScore = 0;
+
+        userScore.forEach((item) => {
+          questionScore += Number(item.score);
+        });
+
+        let totalScore = (questionScore / userPossible_score) * 100;
+
+        console.log(totalScore + "%");
+
+        return res.status(200).json({ accumulatedScore: totalScore });
+      }
+    }
+
+    return res.status(200).json({ message: "Answer submitted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   Signup,
   login,
@@ -602,4 +843,8 @@ module.exports = {
   updateQuiz,
   deleteQuiz,
   updateUserAvatar,
+  AnswerQuestion,
+  getQuestions,
+  userdetailPage,
+  questionAnswered,
 };

@@ -1,6 +1,7 @@
 /** @format */
 
 const side_bar = document.querySelector(".side_bar");
+let quizes = [];
 
 const increaseWidth = document.querySelector(".increaseWidth");
 const descreaseWidth = document.querySelector(".descreaseWidth");
@@ -194,16 +195,17 @@ menu.forEach((link) => {
             console.log(err);
           });
       });
+
       // get the quizzes of the user
       function fetchQuizes() {
         fetch("http://localhost:4000/user/v1/getuserquiz")
           .then((res) => res.json())
           .then((data) => {
-            displayquiz(data);
             if (data.length === 0) {
               return (document.querySelector(".quiz-parent-box").innerHTML =
                 "<h2>User quiz is empty</h2>");
             }
+            displayquiz(data);
           })
           .catch((err) => console.log(err));
       }
@@ -241,7 +243,7 @@ menu.forEach((link) => {
 
             // conver the start date and end date to yyyy-mm-dd format
             const startDateFormat = new Date(startDateString);
-            const getTheYear = String(startDateFormat.getFullYear());
+            const getTheYear = String(startDateFormat.getUTCFullYear());
             const getTheMonth = String(startDateFormat.getMonth());
             const getTheDay = String(startDateFormat.getDay());
             const format = `${getTheMonth}/${getTheDay}/${getTheYear}`;
@@ -431,27 +433,36 @@ menu.forEach((link) => {
       }
 
       function copyText() {
-        const copy_icon = document.querySelectorAll(
+        // Select all copy icons within .quiz-parent-box .quiz-box
+        const copyIcons = document.querySelectorAll(
           ".quiz-parent-box .quiz-box #copy-icon"
         );
 
-        copy_icon.forEach((copy) => {
-          copy.addEventListener("click", (e) => {
-            e.preventDefault();
+        copyIcons.forEach((icon) => {
+          icon.addEventListener("click", (event) => {
+            event.preventDefault(); // Prevent default action
 
-            // Get the input field
-            const copyText = document.querySelectorAll("#link");
-            copyText.forEach((input) => {
-              console.log("copied");
+            // Assuming there is an input field with id="link" related to each copy icon
+            // You might need to adjust the selector based on your actual HTML structure
+            const input = icon.closest(".quiz-box").querySelector("#link");
+            if (input) {
               // Select the text
+              input.focus();
               input.select();
               input.setSelectionRange(0, 99999); // For mobile devices
 
-              // Copy the text
-              navigator.clipboard.writeText(input.value).catch(function (err) {
-                console.error("Failed to copy text: ", err);
-              });
-            });
+              // Copy the text to the clipboard
+              navigator.clipboard
+                .writeText(input.value)
+                .then(() => {
+                  console.log("Text copied successfully!");
+                })
+                .catch((err) => {
+                  console.error("Failed to copy text: ", err);
+                });
+            } else {
+              console.error("Input field not found");
+            }
           });
         });
       }
@@ -724,6 +735,7 @@ menu.forEach((link) => {
         const delete_btn = document.querySelector("#delete");
         delete_btn.addEventListener("click", (e) => {
           e.preventDefault();
+
           const AllCheckersParent = document.querySelectorAll(
             ".quiz-parent-box .quiz-box .check_to_delete"
           );
@@ -754,6 +766,15 @@ menu.forEach((link) => {
             delete_btn.addEventListener("click", (e) => {
               e.preventDefault();
 
+              // Confirm deletion
+              const confirmation = confirm(
+                "Are you sure you want to delete the selected quizzes?"
+              );
+              if (!confirmation) {
+                check.checked = false;
+                return;
+              }
+
               fetch(url, {
                 method: "POST",
                 headers: {
@@ -763,10 +784,15 @@ menu.forEach((link) => {
               })
                 .then((res) => res.json())
                 .then((message) => {
-                  console.log(message);
-                  return fetchQuizes();
+                  if (message.success) {
+                    // Refresh quizzes after successful deletions
+                    console.log(message);
+                    return fetchQuizes();
+                  }
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => {
+                  console.log(err);
+                });
             });
           });
         });
@@ -787,29 +813,29 @@ analytic.addEventListener("click", (e) => {
 });
 
 // Prepare data
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
-const data = {
-  labels: labels,
-  datasets: [
-    {
-      label: "My First Dataset",
-      data: [65, 59, 80, 81, 56, 55, 40],
-      backgroundColor: "rgba(255, 99, 132, 0.2)",
-      borderColor: "rgba(255, 99, 132, 1)",
-      borderWidth: 1,
-    },
-  ],
-};
+// const labels = ["January", "February", "March", "April", "May", "June", "July"];
+// const data = {
+//   labels: labels,
+//   datasets: [
+//     {
+//       label: "My First Dataset",
+//       data: [65, 59, 80, 81, 56, 55, 40],
+//       backgroundColor: "rgba(255, 99, 132, 0.2)",
+//       borderColor: "rgba(255, 99, 132, 1)",
+//       borderWidth: 1,
+//     },
+//   ],
+// };
 
-// Create chart configuration
-const config = {
-  type: "bar",
-  data: data,
-  options: {},
-};
+// // Create chart configuration
+// const config = {
+//   type: "bar",
+//   data: data,
+//   options: {},
+// };
 
-// Create chart instance
-const myChart = new Chart(document.getElementById("myChart"), config);
+// // Create chart instance
+// const myChart = new Chart(document.getElementById("myChart"), config);
 
 const url = "http://localhost:4000/user/v1/getuserprofile";
 
@@ -888,7 +914,6 @@ submitBtn.addEventListener("click", (e) => {
     })
     .catch((err) => {
       console.error("Error:", err);
-      // Handle error: display error message to user or log to console
     });
 });
 

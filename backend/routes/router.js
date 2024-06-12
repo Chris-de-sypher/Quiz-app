@@ -38,7 +38,11 @@ const {
   getQuiz,
   updateQuiz,
   deleteQuiz,
-  updateUserAvatar
+  updateUserAvatar,
+  AnswerQuestion,
+  getQuestions,
+  userdetailPage,
+  questionAnswered
 } = require("../controllers/userController");
 const { isAuthenticated } = require("../middleware/userAuth");
 
@@ -52,6 +56,9 @@ router.get("/question", isAuthenticated, questionPage);
 router.get("/confirm", isAuthenticated, confirm);
 router.get("/getuserprofile", getUserProfile);
 router.get("/getuserquiz", getQuiz);
+router.get("/answerquestion", isAuthenticated, AnswerQuestion);
+router.get("/userdetials", isAuthenticated, userdetailPage);
+router.get("/getquestions/:QuizID", isAuthenticated, getQuestions);
 router.post("/signup", upload.single("avatar"), Signup);
 router.post("/login", login);
 router.post("/username", userName);
@@ -61,6 +68,7 @@ router.post("/changepassword", changePassword);
 router.post("/updatequiz", updateQuiz);
 router.post("/deletequiz", deleteQuiz);
 router.post("/updateuseravatar", upload.single("avatar"), updateUserAvatar);
+router.post("/saveanswer", questionAnswered);
 router.post("/logout", logout);
 
 module.exports = router;

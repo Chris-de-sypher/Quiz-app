@@ -1,0 +1,91 @@
+<!-- @format -->
+
+<link rel="stylesheet" href="/user/v1/styles/displayQuestion.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/regular.min.css"
+  integrity="sha512-KYEnM30Gjf5tMbgsrQJsR0FSpufP9S4EiAYi168MvTjK6E83x3r6PTvLPlXYX350/doBXmTFUEnJr/nCsDovuw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/brands.min.js"
+  integrity="sha512-ojD9xRtdGdJLd9K/vMhV6GyO8G9wVrofDXmX4AjrKPctyKTLaVVwuAJhZanincPnSprZv1Nc3iDpxIi/6+Xv7A=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<header>
+  <div class="userProfile">
+    <span>hello, <%= username %></span>
+    <img src="/user/v1/uploads/<%= avatar %>" alt="User avatar" />
+  </div>
+  <div class="logout">
+    <form action="/user/v1/logout" method="post">
+      <span class="fa-solid fa-power-off"></span>
+      <button type="submit">Logout</button>
+    </form>
+  </div>
+</header>
+
+<div class="container">
+  <div class="popup_modal">
+    <p class="alert"></p>
+    <span class="fa-solid fa-xmark"></span>
+  </div>
+  <div class="spacing"></div>
+  <div class="question_body">
+    <div class="result">
+      <!-- ribons -->
+      <div class="ribons">
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+        <img src="/user/v1/image/ribon1.png" alt="" />
+        <img src="/user/v1/image/ribon2.png" alt="" />
+      </div>
+    </div>
+
+    <div class="timer">
+      <span class="countdown"></span>
+    </div>
+
+    <div class="answerQues">
+      <div class="btn">
+        <!-- Next and previous buttons -->
+        <a class="prev">&#10094;</a>
+        <a class="next">&#10095;</a>
+        <button type="button" id="submitQuestion">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/user/v1/script/displayQuestion.js"></script>

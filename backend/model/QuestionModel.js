@@ -12,7 +12,7 @@ const questionSchema = Schema(
     },
     heading: String,
     options: [String],
-    correct_answer: Number,
+    correct_answer: { type: String, required: true },
   },
   { timestamps: true }
 );

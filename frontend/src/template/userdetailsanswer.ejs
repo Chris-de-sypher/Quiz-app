@@ -1,0 +1,22 @@
+<!-- @format -->
+
+<link rel="stylesheet" href="/user/v1/styles/userdetail.css" />
+
+<div class="userdetail">
+  <h1>User details</h1>
+  <p class="msg"></p>
+  <form action="/user/v1/signup" method="post" enctype="multipart/form-data">
+    <input type="text" name="username" id="username" placeholder="user name" disabled/>
+    <br />
+    <br />
+    <input type="email" name="email" id="email" placeholder="email" disabled/>
+    <br />
+    <br />
+    <input type="text" name="paste_link" id="paste_link" placeholder="Paste url e.g http://"/>
+    <br />
+    <button type="submit">submit</button>
+    <a href="/user/v1/login">login</a>
+  </form>
+</div>
+
+<script src="/user/v1/script/userdetails.js"></script>
