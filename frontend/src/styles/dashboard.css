@@ -334,6 +334,7 @@ canvas {
 }
 .update_delete_btn button:first-child {
   background-color: rgb(7, 83, 7) !important;
+  display: none;
 }
 .update_delete_btn button:last-child {
   background-color: rgb(117, 8, 8) !important;

@@ -7,6 +7,8 @@ const quizCoollection = require("../model/quizModel");
 const questionCollection = require("../model/QuestionModel");
 const answerCollection = require("../model/answersModel");
 const mongoose = require("mongoose");
+const transporter = require("../service/emailServiceNodemailer");
+const scoreCollection = require("../model/scoremodel");
 
 const landingPage = (req, res) => {
   res.render("landingPage");
@@ -242,7 +244,7 @@ const quiz = async (req, res) => {
     duration,
     score_mark_per_question,
     total_score_percentage,
-    selectedValue,
+    email_notifications,
     total_number_of_question,
   } = req.body;
   const email = req.session.email;
@@ -272,7 +274,7 @@ const quiz = async (req, res) => {
       duration,
       score_mark_per_question,
       total_score_percentage,
-      get_email_notification: Boolean(selectedValue),
+      get_email_notification: email_notifications,
       total_number_of_question,
       start_date: new Date(start_date),
       expired_date: new Date(expired_date),
@@ -558,6 +560,7 @@ const updateQuiz = async (req, res) => {
 
       return res.status(200).json({ success: true });
     }
+    return res.status(200).json({ success: true });
   } catch (err) {
     console.log(err);
     return res.status(400).send({ error: "Unable to update" });
@@ -638,6 +641,9 @@ const getQuestions = async (req, res) => {
     // find the quiz
     const findQuiz = await quizCoollection.findById({ _id: quizID });
 
+    // let check if email notification was enabled for this quiz by the creator
+    let emailNotification = findQuiz.get_email_notification;
+
     if (!findQuiz) {
       return res.status(404).send({ msg: "return the 404 page" });
     }
@@ -663,9 +669,11 @@ const getQuestions = async (req, res) => {
       duration: findQuiz.duration,
     };
 
-    return res
-      .status(200)
-      .send({ headTitles: headers, questions: findQuestions });
+    return res.status(200).send({
+      headTitles: headers,
+      questions: findQuestions,
+      emailNot: emailNotification,
+    });
   } catch (err) {
     console.log(err);
     return res.status(400).send({ error: "Internal server error" });
@@ -811,7 +819,7 @@ const questionAnswered = async (req, res) => {
 
         console.log(totalScore + "%");
 
-        return res.status(200).json({ accumulatedScore: totalScore });
+        return res.status(200).json({ accumulatedScore: totalScore + "%" });
       }
     }
 
@@ -819,6 +827,58 @@ const questionAnswered = async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// check the quiz creator enabled email notification
+const emailNotification = async (req, res) => {
+  const { username, useremail, quizID, total_score } = req.body;
+  const { email } = req.session;
+  const user = await userCollection.findOne({ email });
+
+  if (!user) {
+    return res.status(401).json({ msg: "User not found" });
+  }
+
+  const findQuizID = await quizCoollection.findById(quizID);
+  if (!findQuizID) {
+    return res.status(401).json({ error: "Quiz not found" });
+  }
+
+  // created_by
+  let created_by = findQuizID.created_by;
+
+  // store the informations in the scoremodel
+  const newdata = {
+    QuizId: quizID,
+    UserId: user._id,
+    created_by,
+    total_score,
+    username,
+    useremail,
+  };
+
+  const savescore = new scoreCollection(newdata);
+
+  try {
+    await savescore.save();
+
+    const mailOptions = {
+      from: user.email,
+      to: useremail,
+      subject: findQuizID.title,
+      html: `<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; color: #333;"> <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"> <div style="background-color: #4caf50; padding: 10px; border-radius: 5px; color: #ffffff; text-align: center;"><h1 style="margin: 0; font-size: 24px;">Quiz Results</h1></div> <div style="margin-top: 20px;"><p style="font-size: 16px; line-height: 1.5;"><strong>Quiz Title:</strong> <span id="quizTitle">${findQuizID.title}</span></p><p style="font-size: 16px; line-height: 1.5;"><strong>Score:</strong> <span id="score">${total_score}</span> </p><p style="font-size: 16px; line-height: 1.5;"><strong>Created By:</strong> <span id="createdBy">${user.email}</span></p></div><div style="margin-top: 20px; font-size: 12px; text-align: center; color: #777;"><p>This is an automated message. Please do not reply to this email.</p></div></div></body>`,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -847,4 +907,5 @@ module.exports = {
   getQuestions,
   userdetailPage,
   questionAnswered,
+  emailNotification,
 };

@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
 
 
 
+
 const upload = multer({ storage: storage });
 
 const {
@@ -42,7 +43,8 @@ const {
   AnswerQuestion,
   getQuestions,
   userdetailPage,
-  questionAnswered
+  questionAnswered,
+  emailNotification
 } = require("../controllers/userController");
 const { isAuthenticated } = require("../middleware/userAuth");
 
@@ -69,6 +71,7 @@ router.post("/updatequiz", updateQuiz);
 router.post("/deletequiz", deleteQuiz);
 router.post("/updateuseravatar", upload.single("avatar"), updateUserAvatar);
 router.post("/saveanswer", questionAnswered);
+router.post("/emailNotification", isAuthenticated, emailNotification)
 router.post("/logout", logout);
 
 module.exports = router;

@@ -477,6 +477,8 @@ menu.forEach((link) => {
           edit.addEventListener("click", (e) => {
             e.preventDefault();
 
+            document.querySelector("#update").style.display = 'block';
+
             const getDataAtt = e.target.dataset.id;
             console.log(getDataAtt);
             const parent_id =
@@ -506,10 +508,13 @@ menu.forEach((link) => {
                 })
                   .then((res) => res.json())
                   .then((data) => {
-                    const { success } = data;
-                    if (success) {
-                      getPreviousElement.disabled = true;
-                    }
+                    // const { success } = data;
+                    console.log(success, data)
+                    // if (success) {
+                    //   // getPreviousElement.disabled = true;
+                    //   document.querySelector("#update").style.display = 'none';
+                    //   console.log(true)
+                    // }
                   })
                   .catch((err) => console.log(err));
               });
@@ -538,6 +543,7 @@ menu.forEach((link) => {
                     const { success } = data;
                     if (success) {
                       getPreviousElement.disabled = true;
+                      document.querySelector("#update").style.display = 'none';
                     }
                   })
                   .catch((err) => console.log(err));
@@ -567,6 +573,7 @@ menu.forEach((link) => {
                     const { success } = data;
                     if (success) {
                       getPreviousElement.disabled = true;
+                      document.querySelector("#update").style.display = 'none';
                     }
                   })
                   .catch((err) => console.log(err));
@@ -596,6 +603,7 @@ menu.forEach((link) => {
                     const { success } = data;
                     if (success) {
                       getPreviousElement.disabled = true;
+                      document.querySelector("#update").style.display = 'none';
                     }
                   })
                   .catch((err) => console.log(err));
@@ -625,6 +633,7 @@ menu.forEach((link) => {
                     const { success } = data;
                     if (success) {
                       getPreviousElement.disabled = true;
+                      document.querySelector("#update").style.display = 'none';
                     }
                   })
                   .catch((err) => console.log(err));
@@ -654,6 +663,7 @@ menu.forEach((link) => {
                     const { success } = data;
                     if (success) {
                       getPreviousElement.disabled = true;
+                      document.querySelector("#update").style.display = 'none';
                     }
                   })
                   .catch((err) => console.log(err));
@@ -685,6 +695,7 @@ menu.forEach((link) => {
                     if (success) {
                       getPreviousElement.disabled = true;
                       getPreviousElement.type = "text";
+                      document.querySelector("#update").style.display = 'none';
                     }
                   })
                   .catch((err) => console.log(err));
@@ -720,6 +731,7 @@ menu.forEach((link) => {
                     if (success) {
                       getPreviousElement.disabled = true;
                       getPreviousElement.type = "text";
+                      document.querySelector("#update").style.display = 'none';
                     }
                   })
                   .catch((err) => console.log(err));

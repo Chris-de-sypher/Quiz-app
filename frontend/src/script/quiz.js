@@ -20,7 +20,7 @@ function submitFunction(e) {
     "#total_number_of_question"
   ).value;
   const email_notifications = document.querySelector(
-    "input[type='radio'][name='email']:checked"
+    "input[name='email']:checked"
   ).value;
 
   const data = {
@@ -31,9 +31,11 @@ function submitFunction(e) {
     duration,
     score_mark_per_question,
     total_score_percentage,
-    selectedValue: email_notifications,
+    email_notifications,
     total_number_of_question,
   };
+
+  console.log(data);
 
   fetch("http://localhost:4000/user/v1/quiz", {
     method: "POST",

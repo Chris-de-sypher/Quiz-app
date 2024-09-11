@@ -1,18 +1,86 @@
 /** @format */
 
+const Confettiful = function (el) {
+  this.el = el;
+  this.containerEl = null;
+
+  this.confettiFrequency = 3;
+  this.confettiColors = ["#EF2964", "#00C09D", "#2D87B0", "#48485E", "#EFFF1D"];
+  this.confettiAnimations = ["slow", "medium", "fast"];
+
+  this._setupElements();
+  this._renderConfetti();
+};
+
+Confettiful.prototype._setupElements = function () {
+  const containerEl = document.createElement("div");
+  const elPosition = this.el.style.position;
+
+  if (elPosition !== "relative" && elPosition !== "absolute") {
+    this.el.style.position = "relative";
+  }
+
+  containerEl.classList.add("confetti-container");
+  this.el.appendChild(containerEl);
+  this.containerEl = containerEl;
+};
+
+Confettiful.prototype._renderConfetti = function () {
+  this.confettiInterval = setInterval(() => {
+    // Create a new confetti element
+    const confettiEl = document.createElement("div");
+
+    // Set random size for the confetti
+    const confettiSize = Math.floor(Math.random() * 3) + 7 + "px";
+
+    // Set a random background color from the confettiColors array
+    const confettiBackground =
+      this.confettiColors[
+        Math.floor(Math.random() * this.confettiColors.length)
+      ];
+
+    // Set random horizontal position within the container
+    const confettiLeft = Math.floor(Math.random() * this.el.offsetWidth) + "px";
+
+    // Choose a random animation from the confettiAnimations array
+    const confettiAnimation =
+      this.confettiAnimations[
+        Math.floor(Math.random() * this.confettiAnimations.length)
+      ];
+
+    // Apply styles and classes to the confetti element
+    confettiEl.classList.add(
+      "confetti",
+      "confetti--animation-" + confettiAnimation
+    );
+    confettiEl.style.left = confettiLeft;
+    confettiEl.style.width = confettiSize;
+    confettiEl.style.height = confettiSize;
+    confettiEl.style.backgroundColor = confettiBackground;
+
+    // Remove the confetti element after 3 seconds
+    confettiEl.removeTimeout = setTimeout(() => {
+      if (confettiEl.parentNode) {
+        confettiEl.parentNode.removeChild(confettiEl);
+      }
+    }, 3000);
+
+    // Append the confetti element to the container
+    this.containerEl.appendChild(confettiEl);
+  }, 25);
+};
+
 // setting the questions
 const link = localStorage.getItem("link");
 
 const url = `http://localhost:4000/user/v1/getquestions/${link}`;
-// let questionId;
-// let convert;
 
 fetch(url, {
   method: "GET",
 })
   .then((res) => res.json())
   .then((data) => {
-    const { headTitles, questions } = data;
+    const { headTitles, questions, emailNot } = data;
     const html = `<div class="header" data-id="${headTitles.quiz_id}">
     <div class="quiz_name">
       <span>Quiz name</span>
@@ -39,6 +107,12 @@ fetch(url, {
     document.querySelector(".spacing").innerHTML = html;
 
     displayQuestions(questions);
+
+    // check if the email was enabled by the quiz creator, if yes then show option to user
+    if (emailNot == true) {
+      const email_border = document.querySelector(".email_border");
+      email_border.hidden = false;
+    }
   })
   .catch((err) => console.error(err));
 
@@ -99,7 +173,7 @@ function displayQuestions(items) {
 }
 
 window.onload = () => {
-  const container = document.querySelector(".container");
+  const container = document.querySelector(".containers");
 
   let score_perQuestion = container.querySelector(".spacing");
   let passing_grade = container.querySelector(".spacing");
@@ -113,7 +187,7 @@ window.onload = () => {
 // duration -- setting the timer/countdown
 
 function countDown() {
-  const container = document.querySelector(".container");
+  const container = document.querySelector(".containers");
   let durationText = container
     .querySelector(".duration")
     .lastElementChild.textContent.trim();
@@ -147,6 +221,14 @@ function countDown() {
     if (distance < 0) {
       clearInterval(timer);
       countdown.innerHTML = "Time is up!";
+      if ((countdown.textContent = "Time is up!")) {
+        let result = document.querySelector(".result");
+        result.hidden = false;
+
+        window.confettiful = new Confettiful(
+          document.querySelector(".js-container")
+        );
+      }
       console.log("Countdown complete!");
       sessionStorage.removeItem("countdownTargetTime"); // Clear the stored time
     }
@@ -156,7 +238,7 @@ function countDown() {
 // now let's submit the answers
 function submitanswers() {
   // get the form parent element
-  const container = document.querySelector(".container");
+  const container = document.querySelector(".containers");
 
   // get the form to submit the answer
   const SubmitQuestion = container.querySelector("#submitQuestion");
@@ -240,12 +322,38 @@ function submitanswers() {
                     //   input.disabled = true;
                     //   input.checked = true;
                     // });
-
                   }
 
                   const { accumulatedScore } = data;
+                  console.log(accumulatedScore);
+
                   if (accumulatedScore) {
-                    
+                    console.log(true);
+
+                    // we unhide the result
+                    let result = document.querySelector(".result");
+                    result.hidden = false;
+
+                    // show the congratulations effect
+                    window.confettiful = new Confettiful(
+                      document.querySelector(".js-container")
+                    );
+
+                    // let get the username, score and email
+                    let username = document.querySelector(".username");
+                    let scoreboard = document.querySelector(".score");
+                    let useremail = document.querySelector(".email");
+
+                    // retreive the details from the localstorage and update the user detials
+                    let localstorageEmail = localStorage.getItem("email");
+                    let localstorageusername = localStorage.getItem("username");
+
+                    username.innerHTML = localstorageusername;
+                    useremail.innerHTML = localstorageEmail;
+                    scoreboard.innerHTML = accumulatedScore;
+
+                    // store the total score in the localstorage
+                    localStorage.setItem("total_score", accumulatedScore);
                   }
                 })
                 .catch((err) => console.log(err));
@@ -259,4 +367,44 @@ function submitanswers() {
   });
 }
 
+// let trigger the email send button
+let disable_emailNot = document.querySelector("#disable_email");
+let send_email = document.querySelector("#send_email");
 
+// check if it is active
+if (!disable_emailNot.hidden == true) {
+  send_email.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // get the email, username and quiz id from the localstorage
+    let username = localStorage.getItem("username");
+    let useremail = localStorage.getItem("email");
+    let quizID = localStorage.getItem("link");
+    let total_score = localStorage.getItem("total_score");
+
+    if (username === "" || useremail === "" || quizID === "" || total_score === '') {
+      console.log("Empty variables");
+      return;
+    }
+
+    const data = {
+      username,
+      useremail,
+      quizID,
+      total_score
+    };
+
+    let url = "http://localhost:4000/user/v1/emailNotification";
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((msg) => console.log(msg))
+      .catch((err) => console.log(err));
+  });
+}

@@ -34,42 +34,22 @@
   </div>
 </header>
 
-<div class="container">
+<div class="containers">
   <div class="popup_modal">
     <p class="alert"></p>
     <span class="fa-solid fa-xmark"></span>
   </div>
   <div class="spacing"></div>
   <div class="question_body">
-    <div class="result">
+    <div class="result" hidden>
       <!-- ribons -->
-      <div class="ribons">
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
-        <img src="/user/v1/image/ribon1.png" alt="" />
-        <img src="/user/v1/image/ribon2.png" alt="" />
+      <div class="js-container container" style="top: 0px !important">
+        <div class="congratulations-text">
+          <p><b>Username:</b> <span class="username">Christian</span></p>
+          <p><b>Score:</b> <span class="score">50%</span></p>
+          <p><b>Email:</b> <span class="email">christiansilvester700@gmail.com</span></p>
+          <button class="return-dashboard"><a href="/user/v1/dashboard">Continue to dashboard</a></button>
+        </div>
       </div>
     </div>
 
@@ -84,6 +64,20 @@
         <a class="next">&#10095;</a>
         <button type="button" id="submitQuestion">Submit</button>
       </div>
+    </div>
+  </div>
+</div>
+<!-- if user wants to receive result through email  -->
+<div class="email_border" hidden>
+  <span class="fa-solid fa-xmark"></span>
+  <div class="question_email">
+    <p>
+      Email notification for this quiz was enabled by default, you can choose
+      disable it.
+    </p>
+    <div class="btns">
+      <button id="disable_email">Do not send mail</button>
+      <button  id="send_email">send mail</button>
     </div>
   </div>
 </div>
