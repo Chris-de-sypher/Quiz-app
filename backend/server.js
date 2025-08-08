@@ -10,11 +10,11 @@ require("ejs");
 require("./config/db");
 
 // http server
-const { createServer } = require("http");
-const server = createServer(app);
+// const { createServer } = require("http");
+// const server = createServer(app);
 
 // socket.io import (FIX)
-const { Server } = require("socket.io");
+// const { Server } = require("socket.io");
 
 // routes
 const authRoutes = require("./routes/auth.routes");
@@ -80,26 +80,26 @@ app.use(
   express.static(resolve(__dirname, "./uploads"))
 );
 
-// ✅ FIXED SOCKET.IO INITIALIZATION
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
-});
+// // ✅ FIXED SOCKET.IO INITIALIZATION
+// const io = new Server(server, {
+//   cors: {
+//     origin: "*",
+//   },
+// });
 
 // socket events
-io.on("connection", (socket) => {
-  console.log("connection established and stable");
+// io.on("connection", (socket) => {
+//   console.log("connection established and stable");
 
-  socket.on("disconnect", () => {
-    console.log("connection lost and user disconnected");
-  });
-});
+//   socket.on("disconnect", () => {
+//     console.log("connection lost and user disconnected");
+//   });
+// });
 
 // start server
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on ${port}`);
 });
 
 // export io instance
-module.exports = io;
+// module.exports = io;
