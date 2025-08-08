@@ -39,8 +39,12 @@ app.set("views", [
   resolve(__dirname, "../frontend/src/template/quizpage"),
 ]);
 
+const MongoUserName = process.env.MONGODB_USERNAME;
+const MongoPassword = process.env.MONGODB_PASSWORD;
+const MongoDB_Name = process.env.MONGODB_DBNAME;
+
 const store = new mongodbSession({
-  uri: "mongodb://localhost:27017/QuizApp",
+  uri: `mongodb+srv://${MongoUserName}:${MongoPassword}@cluster0.qxequet.mongodb.net/${MongoDB_Name}`,
   collection: "quizUserSession",
 });
 
