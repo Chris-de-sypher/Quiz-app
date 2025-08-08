@@ -6,233 +6,12 @@ const bcrypt = require("bcrypt");
 const quizCoollection = require("../model/quizModel");
 const questionCollection = require("../model/QuestionModel");
 const answerCollection = require("../model/answersModel");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const transporter = require("../service/emailServiceNodemailer");
 const scoreCollection = require("../model/scoremodel");
+// import the socket instance
+const io = require('../server');
 
-const landingPage = (req, res) => {
-  res.render("landingPage");
-};
-
-const loginPage = (req, res) => {
-  res.render("loginPage");
-};
-
-const signupPage = (req, res) => {
-  res.render("SignupPage");
-};
-
-const dashboard = async (req, res) => {
-  // Check if user is authenticated
-  if (!req.session.email) {
-    return res.status(401).redirect("/user/v1/login");
-  }
-
-  try {
-    // Find the user by email
-    const findUser = await userCollection.findOne({ email: req.session.email });
-
-    // If user or avatar is not found, redirect to login page
-    if (!findUser || !findUser.userAvatar) {
-      return res.status(404).redirect("/user/v1/login");
-    }
-
-    const data = {
-      avatar: findUser.userAvatar,
-    };
-
-    // Render dashboard with user avatar
-    return res.status(200).render("dashBoard", data);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send("Internal server error");
-  }
-};
-
-const usernamePage = async (req, res) => {
-  const userSessionEmail = req.session.email;
-
-  const user = await userCollection.findOne({ email: userSessionEmail });
-
-  // If user's username is empty or user not found, render the username page
-  if (!user || !user.username) {
-    return res.render("username");
-  }
-
-  // If user's username is not empty, redirect to the quiz page
-  res.redirect("/user/v1/quiz");
-};
-
-const quizPage = (req, res) => {
-  res.render("quizPage");
-};
-
-const questionPage = async (req, res) => {
-  const { quiz_id } = req.session;
-
-  const quizid = await quizCoollection.findById({ _id: quiz_id });
-
-  if (!quizid || !quizid.title || !quizid.description) {
-    return res.status(404).redirect("/user/v1/quiz");
-  }
-
-  let length_of_questions = quizid.questions.length;
-  let total_number_of_questions = quizid.total_number_of_question;
-
-  const data = {
-    title: quizid.title,
-    desc: quizid.description,
-    length_of_questions,
-    total_number_of_questions,
-  };
-
-  return res.status(200).render("question", data);
-};
-
-// confirmation page
-const confirm = (req, res) => {
-  res.render("confirm");
-};
-
-const AnswerQuestion = async (req, res) => {
-  // Check if user is authenticated
-  if (!req.session.email) {
-    return res.status(401).redirect("/user/v1/login");
-  }
-
-  try {
-    // Find the user by email
-    const findUser = await userCollection.findOne({ email: req.session.email });
-
-    // If user or avatar is not found, redirect to login page
-    if (!findUser || !findUser.userAvatar || !findUser.username) {
-      return res.status(404).redirect("/user/v1/login");
-    }
-
-    const data = {
-      avatar: findUser.userAvatar,
-      username: findUser.username,
-    };
-
-    // Render dashboard with user avatar
-    return res.status(200).render("displayQuestion", data);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send("Internal server error");
-  }
-};
-
-// render the userdetail page
-const userdetailPage = (req, res) => {
-  res.render("userdetailsanswer");
-};
-
-// signup route
-const Signup = async (req, res) => {
-  const { email, password } = req.body;
-
-  // Check if email is a string and contains "@", and password is not empty
-  if (
-    typeof email !== "string" ||
-    !email.includes("@") ||
-    typeof password !== "string" ||
-    password === ""
-  ) {
-    return res.status(400).send({ Errmsg: "Invalid email or password" });
-  }
-
-  try {
-    // Check if a user with the provided email already exists
-    const existingUser = await userCollection.findOne({ email });
-
-    if (existingUser) {
-      return res.status(400).send({ Errmsg: "User already exists" });
-    }
-
-    // Check if a file was uploaded
-    if (!req.file) {
-      return res.status(400).send({ Errmsg: "Avatar file is required" });
-    }
-
-    // Hash the password
-    const hashedPw = await bcrypt.hash(password, 12);
-
-    // Save the filename or file path to the user document in the database
-    const newUser = new userCollection({
-      email,
-      password: hashedPw,
-      userAvatar: req.file.filename,
-    });
-
-    // Save the new user to the database
-    await newUser.save();
-
-    // Redirect the user to the login page after successful signup
-    res.status(200).send({ success: true });
-  } catch (err) {
-    console.error(err); // Log the error for debugging purposes
-    res.status(500).send({ msg: "Failed to save data" });
-  }
-};
-
-// login
-const login = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const existingUser = await userCollection.findOne({ email });
-
-    if (!existingUser) {
-      return res.status(404).redirect("/user/v1/login");
-    }
-
-    const checkPass = await bcrypt.compare(password, existingUser.password);
-
-    if (!checkPass) {
-      return res.status(400).send({ Errmsg: "Incorrect password" });
-    }
-
-    req.session.isAuthenticated = true;
-    req.session.email = email;
-    res.status(200).send({ success: true });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ Errmsg: "Internal Server Error" });
-  }
-};
-
-// logout
-const logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) throw err;
-    res.redirect("/user/v1/");
-  });
-};
-
-// username
-const userName = async (req, res) => {
-  const { username } = req.body;
-
-  if (!req.session.isAuthenticated) {
-    return res.status(401).redirect("/user/v1/login");
-  }
-
-  try {
-    const email = req.session.email;
-    const user = await userCollection.findOne({ email });
-
-    if (!user) {
-      return res.status(404).send({ msg: "User not found" });
-    }
-
-    user.username = username;
-    await user.save();
-    res.status(200).redirect("/user/v1/quiz");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ msg: "Failed to add username" });
-  }
-};
 
 // create the quiz section api
 const quiz = async (req, res) => {
@@ -384,7 +163,7 @@ const changePassword = async (req, res) => {
     const existingUser = await userCollection.findOne({ email });
 
     if (!existingUser) {
-      return res.status(404).redirect("/user/v1/login");
+      return res.status(404).redirect("/api/v1/pages/login");
     }
 
     // check for the password
@@ -418,7 +197,7 @@ const getUserProfile = async (req, res) => {
     const getUser = await userCollection.findOne({ email });
 
     if (!getUser) {
-      res.status(404).redirect("/user/v1/login");
+      res.status(404).redirect("/api/v1/pages/login");
     }
 
     res.status(200).send({ Email: getUser.email, Username: getUser.username });
@@ -436,7 +215,7 @@ const getQuiz = async (req, res) => {
     // Find the user
     const findUser = await userCollection.findOne({ email });
     if (!findUser) {
-      return res.status(404).redirect("/user/v1/login");
+      return res.status(404).redirect("/api/v1/pages/login");
     }
 
     // Get the user's quiz IDs
@@ -454,7 +233,7 @@ const getQuiz = async (req, res) => {
     }
 
     // Send the quizzes in the response
-    return res.status(200).json(quizzes);
+    return res.status(200).json({ quiz: quizzes });
   } catch (error) {
     console.error("Failed to fetch quizzes:", error);
     return res.status(500).json({ message: "Error fetching quizzes." });
@@ -463,159 +242,142 @@ const getQuiz = async (req, res) => {
 
 // update each item in the quiz model
 const updateQuiz = async (req, res) => {
-  const {
-    quizID,
-    title,
-    description,
-    start_date,
-    expired_date,
-    duration,
-    score_mark_per_question,
-    total_score_percentage,
-    total_number_of_question,
-  } = req.body;
+  const { quizID, ...updateFields } = req.body;
 
   try {
-    // update the title
-    if (title) {
-      const updateTitle = await quizCoollection.findById({ _id: quizID });
-
-      updateTitle.title = title;
-
-      await updateTitle.save();
-
-      return res.status(200).json({ success: true });
+    // Check if quizID is provided
+    if (!quizID) {
+      return res.status(400).json({ error: "Quiz ID is required" });
     }
-    // update the description
-    if (description) {
-      const updateDesc = await quizCoollection.findById({ _id: quizID });
 
-      updateDesc.description = description;
+    // Find and update the quiz in one query
+    const updatedQuiz = await quizCoollection.findByIdAndUpdate(
+      quizID,
+      { $set: updateFields }, // Update only the provided fields
+      { new: true } // Return the updated document
+    );
 
-      await updateDesc.save();
-
-      return res.status(200).json({ success: true });
+    // If no quiz found, return error
+    if (!updatedQuiz) {
+      return res.status(404).json({ error: "Quiz not found" });
     }
-    // update the start date
-    if (start_date) {
-      const updateStartDate = await quizCoollection.findById({ _id: quizID });
 
-      updateStartDate.start_date = start_date;
+    return res.status(200).json({ success: true, updatedQuiz });
 
-      await updateStartDate.save();
-
-      return res.status(200).json({ success: true });
-    }
-    // update the end date
-    if (expired_date) {
-      const updateExpDate = await quizCoollection.findById({ _id: quizID });
-
-      updateExpDate.expired_date = expired_date;
-
-      await updateExpDate.save();
-
-      return res.status(200).json({ success: true });
-    }
-    // update the duration
-    if (duration) {
-      const updateDuration = await quizCoollection.findById({ _id: quizID });
-
-      updateDuration.duration = duration;
-
-      await updateDuration.save();
-
-      return res.status(200).json({ success: true });
-    }
-    // update the score_mark_per_question
-    if (score_mark_per_question) {
-      const updateScorePerQues = await quizCoollection.findById({
-        _id: quizID,
-      });
-
-      updateScorePerQues.score_mark_per_question = score_mark_per_question;
-
-      await updateScorePerQues.save();
-
-      return res.status(200).json({ success: true });
-    }
-    // update the total_score_percentage
-    if (total_score_percentage) {
-      const updateTotalScore = await quizCoollection.findById({ _id: quizID });
-
-      updateTotalScore.total_score_percentage = total_score_percentage;
-
-      await updateTotalScore.save();
-
-      return res.status(200).json({ success: true });
-    }
-    // update the total_number_of_question
-    if (total_number_of_question) {
-      const updateTotalNumQues = await quizCoollection.findById({
-        _id: quizID,
-      });
-
-      updateTotalNumQues.total_number_of_question = total_number_of_question;
-
-      await updateTotalNumQues.save();
-
-      return res.status(200).json({ success: true });
-    }
-    return res.status(200).json({ success: true });
   } catch (err) {
-    console.log(err);
-    return res.status(400).send({ error: "Unable to update" });
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
-// delete the quiz
+
+// delete the multiple quiz
 const deleteQuiz = async (req, res) => {
-  const { quizID } = req.body;
+  const { IDS } = req.body;
   const { email } = req.session;
 
   try {
-    if (!quizID) {
-      return res.status(404).send({ error: "Not found" });
+    if (!IDS || IDS.length === 0) {
+      return res.status(404).json({ error: "No quiz IDs provided" });
     }
-    let deletedQuizQuestions = await quizCoollection.findByIdAndDelete({
-      _id: quizID,
-    });
 
-    // get the question id from the deleted quiz
-    let getQuestionsID = deletedQuizQuestions.questions;
-    // now call the question document and parse the id to delete
-    await questionCollection.findByIdAndDelete({
-      _id: getQuestionsID,
-    });
+    // Step 1: Fetch the quizzes before deleting
+    const quizzesToDelete = await quizCoollection.find({ _id: { $in: IDS } });
 
-    // get the user who created the quiz and delete the quiz from the user array of quizes
+    if (quizzesToDelete.length === 0) {
+      return res.status(404).json({ message: "No quizzes found to delete" });
+    }
+
+    // Extract question IDs from the quizzes
+    const getQuestionsID = quizzesToDelete.flatMap((quiz) => quiz.questions);
+
+    // Step 2: Delete the quizzes
+    await quizCoollection.deleteMany({ _id: { $in: IDS } });
+
+    // Step 3: Delete related questions
+    await questionCollection.deleteMany({ _id: { $in: getQuestionsID } });
+
+    // Step 4: Remove quiz IDs from user model
     const userQuiz = await userCollection.findOne({ email });
 
     if (!userQuiz) {
-      return res.status(404).send({ error: "Quiz id not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
-    let deletedQuiz = userQuiz.quiz_Id.filter((q) => q.toString() !== quizID);
-    userQuiz.quiz_Id = deletedQuiz;
+    // Remove the deleted quiz IDs from the user's quiz array
+    userQuiz.quiz_Id = userQuiz.quiz_Id.filter((q) => !IDS.includes(q.toString()));
 
     await userQuiz.save();
 
-    return res.status(200).send({ success: "Deleted successfully" });
+    // Step 5: Find remaining quizzes and emit an update
+    const remainingQuizzes = await quizCoollection.find({ _id: { $in: userQuiz.quiz_Id } });
+
+    // io.emit("updateQuiz", remainingQuizzes);
+
+    return res.status(200).json({ success: "Deleted successfully", Quiz: remainingQuizzes });
   } catch (err) {
-    console.log(err);
-    return res.status(400).send({ error: "Bad request" });
+    console.error(err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+// Delete single quiz
+const deleteSingleQuiz = async (req, res) => {
+  const Id = req.params.ID;
+  const { email } = req.session;
+
+  try {
+    if (!Id) {
+      return res.status(404).json({ error: "Quiz ID not provided" });
+    }
+
+    // Delete quiz from quizCollection
+    const deletedQuiz = await quizCoollection.findOneAndDelete({ _id: Id });
+
+    if (!deletedQuiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    // Delete associated questions
+    const getQuestionsID = deletedQuiz.questions; // Ensure questions field exists
+    if (getQuestionsID) {
+      await questionCollection.deleteOne({ _id: getQuestionsID });
+    }
+
+    // Remove quiz from user's array of quizzes
+    const userQuiz = await userCollection.findOne({ email });
+
+    if (!userQuiz) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    userQuiz.quiz_Id = userQuiz.quiz_Id.filter((q) => q.toString() !== ID);
+    await userQuiz.save();
+
+    // Fetch remaining quizzes
+    const remainingQuiz = userQuiz.quiz_Id;
+    const findQuiz = await quizCoollection.find({ _id: { $in: remainingQuiz } });
+
+    return res.status(200).json({ success: "Deleted successfully", Quiz: findQuiz });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 
 // update the user dp
 const updateUserAvatar = async (req, res) => {
   const { email } = req.session;
   if (!email) {
-    return res.status(401).redirect("/user/v1/login");
+    return res.status(401).redirect("/api/v1/pages/login");
   }
   try {
     const findUser = await userCollection.findOne({ email });
     if (!findUser) {
-      return res.status(404).redirect("/user/v1/login");
+      return res.status(404).redirect("/api/v1/pages/login");
     }
 
     // Check if a file was uploaded
@@ -700,7 +462,15 @@ const getQuestions = async (req, res) => {
 // store the answers in the database
 const questionAnswered = async (req, res) => {
   const { email } = req.session;
-  const { quizID, questionID, correctanswer, participantEMail } = req.body;
+  const {
+    quizID,
+    questionID,
+    correctanswer,
+    participantEMail,
+    participantName,
+  } = req.body;
+
+  console.log(typeof participantEMail);
 
   let score;
   let userPercentage;
@@ -819,8 +589,25 @@ const questionAnswered = async (req, res) => {
 
         console.log(totalScore + "%");
 
+        //
+
         return res.status(200).json({ accumulatedScore: totalScore + "%" });
       }
+
+      // find the userID using the participant email address
+      const findUserID = await userCollection.findOne({ email: participantEMail })
+
+      // check if it's registered in our db
+      if (!findUserID) {
+        return res.status(401).redirect('/api/v1/pages/login')
+      }
+
+      // update the quizcollection
+      await quizCoollection.findByIdAndUpdate(quizID, {
+        $push: {
+          participant_ID: findUserID._id,
+        },
+      });
     }
 
     return res.status(200).json({ message: "Answer submitted successfully" });
@@ -830,7 +617,7 @@ const questionAnswered = async (req, res) => {
   }
 };
 
-// check the quiz creator enabled email notification
+// check the quiz creator enabled email notification // send email notification
 const emailNotification = async (req, res) => {
   const { username, useremail, quizID, total_score } = req.body;
   const { email } = req.session;
@@ -882,30 +669,74 @@ const emailNotification = async (req, res) => {
   }
 };
 
+// user data report from the database
+const dataReport = async (req, res) => {
+  try {
+    // user on session
+    const { email } = req.session;
+    // using the email to check if the user exist
+    const findUser = await userCollection.findOne({ email });
+
+    if (!findUser) {
+      return res.status(401).redirect("/login");
+    }
+
+    // get the user ID
+    const userID = findUser._id;
+
+    // get the quiz
+    const findUserQuiz = findUser.quiz_Id;
+
+    // check if no quiz is found;
+    if (findUserQuiz.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No quizzes found for this user." });
+    }
+
+    // now we itterate throught the quiz collection using the quiz iDS
+    const findQuiz = await quizCoollection.find({ _id: { $in: findUserQuiz } })
+
+    if (!findQuiz || findQuiz.length === 0) {
+      return res.status(404).json({ message: "No quizzes found." });
+    }
+
+    // now we get the number of users that participated in the quiz created by this user
+    let findUsersEngaged;
+    for (let i = 0; i < findQuiz.length; i++) {
+
+      const userEngaged = findQuiz[i].participant_ID;
+
+      findUsersEngaged = await userCollection.find({ _id: { $in: userEngaged } })
+
+      console.log(findUsersEngaged.length)
+
+    }
+
+    // find the users engaged in the quiz
+
+    // get the number of quiz
+    return res.status(200).json({ quizLength: findQuiz.length, participants: findUsersEngaged.length })
+
+
+  } catch (err) {
+    console.error("Error in dataReport:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
-  Signup,
-  login,
-  landingPage,
-  loginPage,
-  signupPage,
-  dashboard,
-  logout,
-  usernamePage,
-  userName,
-  quizPage,
   quiz,
-  questionPage,
   question,
-  confirm,
   changePassword,
   getUserProfile,
   getQuiz,
   updateQuiz,
   deleteQuiz,
+  deleteSingleQuiz,
   updateUserAvatar,
-  AnswerQuestion,
   getQuestions,
-  userdetailPage,
   questionAnswered,
   emailNotification,
+  dataReport,
 };

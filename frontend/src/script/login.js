@@ -13,7 +13,9 @@ form.addEventListener("submit", (e) => {
     password,
   };
 
-  const url = "http://localhost:4000/user/v1/login";
+  console.log(data)
+
+  const url = "/api/v1/auth/login";
 
   fetch(url, {
     method: "POST",
@@ -26,7 +28,7 @@ form.addEventListener("submit", (e) => {
     .then((message) => {
       const { Errmsg, success } = message;
       if (success) {
-        window.location.href = '/user/v1/dashboard';
+        window.location.href = '/api/v1/pages/dashboard';
       }
       if (Errmsg) {
         let msg = document.querySelector("p.msg");

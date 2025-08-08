@@ -1,11 +1,11 @@
 <!-- @format -->
 
-<link rel="stylesheet" href="/user/v1/styles/userdetail.css" />
+<link rel="stylesheet" href="/api/v1/pages/styles/userdetail.css" />
 
 <div class="userdetail">
   <h1>User details</h1>
   <p class="msg"></p>
-  <form action="/user/v1/signup" method="post" enctype="multipart/form-data">
+  <form action="/api/v1/pages/signup" method="post" enctype="multipart/form-data">
     <input type="text" name="username" id="username" placeholder="user name" disabled/>
     <br />
     <br />
@@ -15,8 +15,8 @@
     <input type="text" name="paste_link" id="paste_link" placeholder="Paste url e.g http://"/>
     <br />
     <button type="submit">submit</button>
-    <a href="/user/v1/login">login</a>
+    <a href="/api/v1/pages/login">login</a>
   </form>
 </div>
 
-<script src="/user/v1/script/userdetails.js"></script>
+<script src="/api/v1/pages/script/userdetails.js"></script>

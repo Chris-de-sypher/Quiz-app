@@ -1,6 +1,6 @@
 <!-- @format -->
 
-<link rel="stylesheet" href="/user/v1/styles/displayQuestion.css" />
+<link rel="stylesheet" href="/api/v1/pages/styles/displayQuestion.css" />
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -24,10 +24,10 @@
 <header>
   <div class="userProfile">
     <span>hello, <%= username %></span>
-    <img src="/user/v1/uploads/<%= avatar %>" alt="User avatar" />
+    <img src="/api/v1/pages/uploads/<%= avatar %>" alt="User avatar" />
   </div>
   <div class="logout">
-    <form action="/user/v1/logout" method="post">
+    <form action="/api/v1/auth/logout" method="post">
       <span class="fa-solid fa-power-off"></span>
       <button type="submit">Logout</button>
     </form>
@@ -45,10 +45,10 @@
       <!-- ribons -->
       <div class="js-container container" style="top: 0px !important">
         <div class="congratulations-text">
-          <p><b>Username:</b> <span class="username">Christian</span></p>
-          <p><b>Score:</b> <span class="score">50%</span></p>
-          <p><b>Email:</b> <span class="email">christiansilvester700@gmail.com</span></p>
-          <button class="return-dashboard"><a href="/user/v1/dashboard">Continue to dashboard</a></button>
+          <p><b>Username:</b> <span class="username"></span></p>
+          <p><b>Score:</b> <span class="score"></span></p>
+          <p><b>Email:</b> <span class="email"></span></p>
+          <button class="return-dashboard"><a href="/api/v1/pages/dashboard">Continue to dashboard</a></button>
         </div>
       </div>
     </div>
@@ -82,4 +82,4 @@
   </div>
 </div>
 
-<script src="/user/v1/script/displayQuestion.js"></script>
+<script src="/api/v1/pages/script/displayQuestion.js"></script>

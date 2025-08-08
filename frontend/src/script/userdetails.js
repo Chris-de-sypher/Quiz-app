@@ -7,7 +7,7 @@ const form = document.querySelector("form");
 let userEmail;
 let userUsername;
 
-fetch("/user/v1/getuserprofile", {
+fetch("/api/v1/data/getuserprofile", {
   method: "GET",
 })
   .then((res) => res.json())
@@ -54,7 +54,7 @@ function displayUserdetail(useremail, userusername) {
     localStorage.setItem("link", sessionData.url);
 
     if (true) {
-      window.location.href = "/user/v1/answerquestion";
+      window.location.href = "/api/v1/pages/answerquestion";
     }
   });
 }

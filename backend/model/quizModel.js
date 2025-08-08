@@ -38,14 +38,12 @@ const quizSchema = Schema(
       type: Number,
       required: true,
     },
-    participant_email: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user'
-    }],
-    participant_username: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user'
-    }],
+    participant_ID: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
     expired_data: Date,
     total_number_of_question: Number,
     get_email_notification: Boolean,

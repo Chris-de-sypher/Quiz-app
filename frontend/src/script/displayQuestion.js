@@ -73,7 +73,7 @@ Confettiful.prototype._renderConfetti = function () {
 // setting the questions
 const link = localStorage.getItem("link");
 
-const url = `http://localhost:4000/user/v1/getquestions/${link}`;
+const url = `/api/v1/data/getquestions/${link}`;
 
 fetch(url, {
   method: "GET",
@@ -248,6 +248,7 @@ function submitanswers() {
   let quizId = header.getAttribute("data-id");
   // now get the user email from the localStorage;
   let userEmail = localStorage.getItem("email");
+  let username = localStorage.getItem("username");
 
   SubmitQuestion.addEventListener("click", (e) => {
     e.preventDefault();
@@ -280,9 +281,10 @@ function submitanswers() {
               questionID: questionId,
               correctanswer: value,
               participantEMail: userEmail,
+              participantName: username,
             };
 
-            const url = "http://localhost:4000/user/v1/saveanswer";
+            const url = "/api/v1/data/saveanswer";
 
             try {
               fetch(url, {
@@ -368,8 +370,9 @@ function submitanswers() {
 }
 
 // let trigger the email send button
-let disable_emailNot = document.querySelector("#disable_email");
+let disable_emailNot = document.querySelector(".email_border");
 let send_email = document.querySelector("#send_email");
+let disable_email = document.querySelector("#disable_email");
 
 // check if it is active
 if (!disable_emailNot.hidden == true) {
@@ -382,7 +385,12 @@ if (!disable_emailNot.hidden == true) {
     let quizID = localStorage.getItem("link");
     let total_score = localStorage.getItem("total_score");
 
-    if (username === "" || useremail === "" || quizID === "" || total_score === '') {
+    if (
+      username === "" ||
+      useremail === "" ||
+      quizID === "" ||
+      total_score === ""
+    ) {
       console.log("Empty variables");
       return;
     }
@@ -391,10 +399,10 @@ if (!disable_emailNot.hidden == true) {
       username,
       useremail,
       quizID,
-      total_score
+      total_score,
     };
 
-    let url = "http://localhost:4000/user/v1/emailNotification";
+    let url = "/api/v1/data/emailNotification";
 
     fetch(url, {
       method: "POST",
@@ -408,3 +416,7 @@ if (!disable_emailNot.hidden == true) {
       .catch((err) => console.log(err));
   });
 }
+disable_email.addEventListener("click", (e) => {
+  e.preventDefault();
+  disable_emailNot.hidden = true;
+});

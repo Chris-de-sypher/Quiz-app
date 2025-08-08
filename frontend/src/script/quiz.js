@@ -37,7 +37,7 @@ function submitFunction(e) {
 
   console.log(data);
 
-  fetch("http://localhost:4000/user/v1/quiz", {
+  fetch("/api/v1/data/quiz", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -45,7 +45,7 @@ function submitFunction(e) {
     .then((response) => response.json())
     .then((message) => {
       if (message.success) {
-        window.location.href = "/user/v1/question"; // Redirect on success
+        window.location.href = "/api/v1/pages/question"; // Redirect on success
       } else if (message.ErrMsg) {
         const msg = document.querySelector("p.msg");
         msg.textContent = message.ErrMsg;

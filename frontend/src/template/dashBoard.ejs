@@ -1,5 +1,5 @@
 <!-- @format -->
-<link rel="stylesheet" href="/user/v1/styles/dashboard.css" />
+<link rel="stylesheet" href="/api/v1/pages/styles/dashboard.css" />
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -24,7 +24,7 @@
 <div class="container">
   <div class="side_bar">
     <div class="profile-pics">
-      <img src="/user/v1/uploads/<%= avatar %>" alt="User Avatar" />
+      <img src="/api/v1/pages/uploads/<%= avatar %>" alt="User Avatar" />
       <span class="fa-solid fa-pencil"></span>
     </div>
 
@@ -36,7 +36,7 @@
       <li><a href="#" data-id="Quiz-section" class="data">Quiz</a></li>
     </ul>
     <div class="logout">
-      <form action="/user/v1/logout" method="post">
+      <form action="/api/v1/auth/logout" method="post">
         <button type="submit">logout</button>
       </form>
     </div>
@@ -110,17 +110,67 @@
       <h1>
         Quiz
         <!--<span><%=  %></span>-->
+        <!-- delete-preview end -->
+        <div class="update_delete_btn">
+          <button>
+            <a href="/api/v1/pages/username"
+              ><i class="fa-solid fa-plus"></i> Create Quiz</a
+            >
+          </button>
+          <button class="answerQuiz">
+            <a href="/api/v1/pages/userdetails"
+              ><i class="fa-solid fa-book-open-reader"></i> Answer Quiz</a
+            >
+          </button>
+          <button type="click" id="update">Update</button>
+          <button type="submit" id="delete">
+            <i class="fa-solid fa-trash-can"></i> Delete
+          </button>
+        </div>
       </h1>
       <div class="quiz-parent-box">
         <!-- <h2>No Quiz created yet</h2> -->
       </div>
-      <div class="update_delete_btn">
-        <button type="click" id="update">Update</button>
-        <button type="submit" id="delete">Delete</button>
+
+      <!-- delete preview -->
+      <div class="overlay_delete_preview">
+        <div class="delete_preview">
+          <div class="delete_text">
+            <span class="fa-solid fa-xmark"></span>
+            <h1>Delete <span id="document_count"><%= quizLength %></span> documents</h1>
+            <p style="font-family: sans-serif">Quiz Section</p>
+          </div>
+
+          <div class="overflow_">
+            <div class="vertical-height">
+              <!-- it goes here -->
+            </div>
+          </div>
+          <!-- btns for cancel and delete -->
+          <div class="btns_delete">
+            <button type="button">Cancel</button>
+            <button type="button" id="confirmation_del_btn">
+              Delete <span id="document_count"><%= quizLength %></span> document
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="btn">
-        <button><a href="/user/v1/username">Create Quiz</a></button>
-        <button class="answerQuiz"><a href="/user/v1/userdetials">Answer Quiz</a></button>
+
+      <!-- confirmation delete box -->
+      <div class="confrimation_box_overlay">
+        <div class="confrimation_box">
+          <h1>Are you absolutely sure?</h1>
+          <p>
+            This action can not be undone. This will permanently delete
+            <span id="document_count"></span> documents.
+          </p>
+          <div class="confirmation_delete_btns">
+            <button type="button" id="cancel_">Cancel</button>
+            <button type="button" id="delete_doc_btn">
+              Delete <span id="document_count"><%= quizLength %></span> document
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -129,14 +179,18 @@
       <span class="fa-solid fa-xmark"></span>
 
       <div class="avatar_modal">
-        <img src="/user/v1/uploads/<%= avatar %>" alt="User Avatar" >
-        <input type="file" name="updateAvatar" id="updateAvatar">
+        <img src="/api/v1/pages/uploads/<%= avatar %>" alt="User Avatar" />
+        <input type="file" name="updateAvatar" id="updateAvatar" />
         <button type="click">Update</button>
       </div>
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 
-<script src="/user/v1/script/dashboard.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script src="/api/v1/pages/script/Dashboard/dashboard.js"></script>
+<script src="/api/v1/pages/script/Dashboard/sidebarDashboard.js"></script>
+<!-- <script src="/user/v1/script/Dashboard/deleteOPDashboard.js"></script> -->

@@ -72,7 +72,7 @@ form.addEventListener("submit", (e) => {
     return false;
   }
 
-  const url = "http://localhost:4000/user/v1/question";
+  const url = "/api/v1/data/question";
 
   fetch(url, {
     method: "POST",
@@ -124,7 +124,7 @@ form.addEventListener("submit", (e) => {
           "You've reached the limit of your question, now you will be redirected"
         );
 
-        window.location.href = "/user/v1/dashboard";
+        window.location.href = "/api/v1/pages/dashboard";
       }
       document.querySelector("#question").value = "";
       document.querySelector("#option1").value = "";

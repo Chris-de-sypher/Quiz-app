@@ -18,7 +18,7 @@ form.addEventListener("submit", (e) => {
   formData.append("password", password);
   formData.append("avatar", userAvatar);
 
-  const url = "http://localhost:4000/user/v1/signup";
+  const url = "http://localhost:4000/api/v1/auth/signup";
 
   fetch(url, {
     method: "POST",
@@ -29,7 +29,7 @@ form.addEventListener("submit", (e) => {
       const { Errmsg, success } = message;
 
       if (success) {
-        window.location.href = "/user/v1/login";
+        window.location.href = "/api/v1/pages/login";
       }
 
       if (Errmsg) {
