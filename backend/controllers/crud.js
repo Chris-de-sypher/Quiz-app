@@ -10,7 +10,7 @@ const answerCollection = require("../model/answersModel");
 const transporter = require("../service/emailServiceNodemailer");
 const scoreCollection = require("../model/scoremodel");
 // import the socket instance
-const io = require('../server');
+// const io = require('../server');
 
 
 // create the quiz section api
