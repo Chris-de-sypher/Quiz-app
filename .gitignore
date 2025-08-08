@@ -1,3 +1,4 @@
 node_modules/
 
-quiz.env
+# env
+.env
